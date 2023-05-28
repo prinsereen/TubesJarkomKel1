@@ -14,9 +14,9 @@ while True:
     try:
         message = connection_socket.recv(1024).decode()  # Menerima pesan dari client sebesar 1024 byte dan mendekode pesan tersebut menjadi string
         if not message:
-            continue
+            continue  # Melanjutkan ke iterasi berikutnya jika pesan kosong
 
-        print('\nHTTP request:\n', message)
+        print('\nHTTP request:\n', message)  # Menampilkan pesan permintaan HTTP dari klien
 
         # Parse HTTP request
         request = message.split('\r\n')[0].split()  # Memecah pesan HTTP menjadi bagian-bagian yang relevan
@@ -44,8 +44,8 @@ while True:
                 file_content = f.read()  # Membaca konten file
 
             # Create HTTP response message
-            response = 'HTTP/1.1 200 OK\r\n'
-            response += 'Content-Type: text/html\r\n\r\n'
+            response = 'HTTP/1.1 200 OK\r\n'  # Membuat status baris tanggapan HTTP dengan kode status 200 OK
+            response += 'Content-Type: text/html\r\n\r\n'  # Menambahkan header Content-Type ke tanggapan
             response += file_content  # Menambahkan konten file ke pesan tanggapan
 
         # Process HTTP HEAD request
@@ -62,29 +62,30 @@ while True:
                 raise IOError
 
             # Create HTTP response message
-            response = 'HTTP/1.1 200 OK\r\n'
-            response += 'Content-Type: text/html\r\n\r\n'
+            response = 'HTTP/1.1 200 OK\r\n'  # Membuat status baris tanggapan HTTP dengan kode status 200 OK
+            response += 'Content-Type: text/html\r\n\r\n'  # Menambahkan header Content-Type ke tanggapan
 
-        # Unsupported HTTP method
+            # Unsupported HTTP method
         else:
-            response = 'HTTP/1.1 405 Method Not Allowed\r\n'
+            response = 'HTTP/1.1 405 Method Not Allowed\r\n'  # Jika metode HTTP tidak didukung, membuat tanggapan HTTP dengan kode status 405 Method Not Allowed
 
         # Send HTTP response
-        connection_socket.send(response.encode())
+        connection_socket.send(response.encode())  # Mengirim tanggapan HTTP ke klien dengan mengubahnya menjadi byte dan mengirimkannya melalui soket koneksi
 
     except IOError:
         # File not found
-        response = 'HTTP/1.1 404 Not Found\r\n'
-        response += 'Content-Type: text/html\r\n\r\n'
-        response += '<h1>404 Not Found</h1>'
-        connection_socket.send(response.encode())
+        response = 'HTTP/1.1 404 Not Found\r\n'  # Jika file tidak ditemukan, membuat tanggapan HTTP dengan kode status 404 Not Found
+        response += 'Content-Type: text/html\r\n\r\n'  # Menambahkan header Content-Type ke tanggapan
+        response += '<h1>404 Not Found</h1>'  # Menambahkan pesan HTML ke tanggapan
+        connection_socket.send(response.encode())  # Mengirim tanggapan HTTP ke klien dengan mengubahnya menjadi byte dan mengirimkannya melalui soket koneksi
 
     except Exception as e:
-        print('Error:', e)
+        print('Error:', e)  # Menampilkan pesan kesalahan jika terjadi kesalahan selama penanganan permintaan
 
     finally:
         # Close connection
-        connection_socket.close()
+        connection_socket.close()  # Menutup soket koneksi setelah penanganan permintaan selesai
 
-server_socket.close()
-sys.exit()
+server_socket.close()  # Menutup soket server setelah loop while selesai
+sys.exit()  # Menghentikan program secara keseluruhan
+
